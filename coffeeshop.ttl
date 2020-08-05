@@ -1,0 +1,189 @@
+@prefix ns1: <http://www.coffeeshop.com/coffee#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.coffeeshop.com/coffee#07200270> a ns1:Order ;
+    ns1:coffeeType "Latte"^^xsd:string ;
+    ns1:customer "Tony"^^xsd:string ;
+    ns1:finishStatus "finished"^^xsd:string ;
+    ns1:orderCost 6.5e+00 ;
+    ns1:orderID "7200270"^^xsd:int ;
+    ns1:orderTime "2019-07-20T11:40:00"^^xsd:dateTime ;
+    ns1:paymentStatus "paid"^^xsd:string ;
+    ns1:quantity "1"^^xsd:int .
+
+<http://www.coffeeshop.com/coffee#07200324> a ns1:Order ;
+    ns1:coffeeType "Matcha"^^xsd:string ;
+    ns1:customer "Jim Hay"^^xsd:string ;
+    ns1:finishStatus "pending"^^xsd:string ;
+    ns1:orderCost 5.5e+00 ;
+    ns1:orderID "7200324"^^xsd:int ;
+    ns1:orderTime "2019-07-20T14:20:39"^^xsd:dateTime ;
+    ns1:paymentStatus "unpaid"^^xsd:string ;
+    ns1:quantity "1"^^xsd:int .
+
+<http://www.coffeeshop.com/coffee#1234567> a ns1:Payment ;
+    ns1:amount 6.5e+00 ;
+    ns1:orderID "7200270"^^xsd:int ;
+    ns1:paymentTime "2019-07-20T11:44:00"^^xsd:dateTime .
+
+ns1:Alan a ns1:Staff ;
+    ns1:role "Barista"^^xsd:string ;
+    ns1:staffID "2008"^^xsd:int .
+
+ns1:Latte a ns1:Coffee ;
+    ns1:cost 6.5e+00 ;
+    ns1:size "'regular/large'"^^xsd:string ;
+    ns1:type "Latte"^^xsd:string .
+
+ns1:Matcha a ns1:Coffee ;
+    ns1:cost 5.5e+00 ;
+    ns1:size "regular/large"^^xsd:string ;
+    ns1:type "Matcha"^^xsd:string .
+
+ns1:Steve a ns1:Staff ;
+    ns1:role "Cashier"^^xsd:string ;
+    ns1:staffID "1006"^^xsd:int .
+
+ns1:addInto a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range ns1:Entry .
+
+ns1:amend a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Customer ;
+    rdfs:range ns1:Order .
+
+ns1:amount a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Payment ;
+    rdfs:range xsd:double .
+
+ns1:cancel a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Customer ;
+    rdfs:range ns1:Order .
+
+ns1:coffeeType a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:double .
+
+ns1:cost a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Coffee ;
+    rdfs:range xsd:double .
+
+ns1:customer a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:string .
+
+ns1:deleteFinished a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Barista ;
+    rdfs:range ns1:Entry .
+
+ns1:finishStatus a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:string .
+
+ns1:generate a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Customer ;
+    rdfs:range ns1:Order .
+
+ns1:getListOf a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Customer ;
+    rdfs:range ns1:Coffee .
+
+ns1:orderCost a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:double .
+
+ns1:orderID a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:int .
+
+ns1:orderTime a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:dateTime .
+
+ns1:paidFor a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Payment ;
+    rdfs:range ns1:Order .
+
+ns1:pay a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Customer ;
+    rdfs:range ns1:Payment .
+
+ns1:paymentID a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Payment ;
+    rdfs:range xsd:int .
+
+ns1:paymentStatus a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:string .
+
+ns1:paymentTime a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Payment ;
+    rdfs:range xsd:dateTime .
+
+ns1:quantity a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Order ;
+    rdfs:range xsd:int .
+
+ns1:receive a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Cashier ;
+    rdfs:range ns1:Payment .
+
+ns1:role a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Staff ;
+    rdfs:range xsd:string .
+
+ns1:sendTo a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Entry ;
+    rdfs:range ns1:Barista .
+
+ns1:size a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Coffee ;
+    rdfs:range xsd:string .
+
+ns1:staffID a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Staff ;
+    rdfs:range xsd:int .
+
+ns1:type a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Coffee ;
+    rdfs:range xsd:string .
+
+ns1:updateFinish a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Barista ;
+    rdfs:range ns1:Order .
+
+ns1:updatePayment a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    rdfs:domain ns1:Cashier ;
+    rdfs:range ns1:Order .
+
+ns1:Cashier a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Staff .
+
+ns1:Person a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Object .
+
+ns1:Barista a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Staff .
+
+ns1:Entry rdfs:subClassOf ns1:Object .
+
+ns1:Customer a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Person .
+
+ns1:Object a <http://www.w3.org/2002/07/owl#Class> .
+
+ns1:Coffee a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Object .
+
+ns1:Staff a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Person .
+
+ns1:Payment a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Object .
+
+ns1:Order a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf ns1:Object .
+

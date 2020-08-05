@@ -1,0 +1,886 @@
+swagger: '2.0'
+info:
+  description: A sample system of coffee shop
+  version: '1.0'
+  title: Swagger Coffee Shop
+tags:
+  - name: order
+  - name: payment
+  - name: coffee
+  - name: myOntology
+    description: my ontology definition
+    externalDocs:
+      description: url of my ontology
+      url: 'http://www.coffeeshop.com/coffee#'
+host: coffee.api.au
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /orders:
+    post:
+      tags:
+        - 'myOntology:order'
+        - order
+      summary: Create a new coffee order
+      description: ''
+      parameters:
+        - name: type
+          in: query
+          description: What type of coffee do you want
+          required: true
+          type: string
+          enum:
+            - 'Latte Price: $6.0'
+            - 'Espresso Price: $4.0'
+            - 'Cappuccino Price: $8.0'
+            - 'Irish Coffee Price: $12.0'
+        - name: size
+          in: query
+          description: Which size do you want
+          required: true
+          type: string
+          enum:
+            - Small -$1.0
+            - Regular +$0.0
+            - Large +$1.0
+            - Extra large +2.0
+          default: Regular +$0.0
+        - name: quantity
+          in: query
+          description: How many cups of coffee do you want
+          required: true
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 10
+          default: 1
+      responses:
+        '200':
+          description: Create successfully
+          schema:
+            $ref: '#/definitions/postAnOrder'
+        '400':
+          description: Cannot create new orders
+          schema:
+            type: object
+            properties:
+              time:
+                type: string
+                format: date-time
+    get:
+      tags:
+        - 'myOntology:order'
+        - order
+      summary: Get all coffee order details
+      description: ''
+      responses:
+        '200':
+          description: Get successfully
+          schema:
+            $ref: '#/definitions/getOrders'
+        '404':
+          description: Cannot get existing orders
+          schema:
+            type: object
+            properties:
+              time:
+                type: string
+                format: date-time
+  '/orders/{orderID}':
+    put:
+      tags:
+        - 'myOntology:order'
+        - order
+      summary: Amend an order
+      parameters:
+        - name: orderID
+          in: path
+          description: ID of order that needs to be amended
+          required: true
+          type: integer
+          format: int64
+        - name: type
+          in: path
+          description: What type of coffee do you want
+          required: true
+          type: string
+          enum:
+            - 'Latte Price: $6.0'
+            - 'Espresso Price: $4.0'
+            - 'Cappuccino Price: $8.0'
+            - 'Irish Coffee Price: $12.0'
+        - name: size
+          in: path
+          description: Which size do you want"
+          required: true
+          type: string
+          enum:
+            - Small -$1.0
+            - Regular +$0.0
+            - Large +$1.0
+            - Extra large +2.0
+          default: Regular +$0.0
+        - name: quantity
+          in: path
+          description: How many cups of coffee do you want
+          required: true
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 10
+          default: 1
+      description: ''
+      responses:
+        '200':
+          description: Amend successfully
+          schema:
+            $ref: '#/definitions/putAnOrder'
+        '404':
+          description: Cannot find and amend this order
+          schema:
+            $ref: '#/definitions/failToAmend'
+        '409':
+          description: Cannot amend this order because it has been paid or finished
+          schema:
+            $ref: '#/definitions/failToAmend'
+    get:
+      tags:
+        - 'myOntology:order'
+        - order
+      summary: Get detail of an order
+      parameters:
+        - name: orderID
+          in: path
+          description: ID of order that needs to be get
+          required: true
+          type: integer
+          format: int64
+      description: ''
+      responses:
+        '200':
+          description: Get successfully
+          schema:
+            $ref: '#/definitions/getAnOrder'
+        '404':
+          description: Cannot find this order
+          schema:
+            $ref: '#/definitions/failToGet'
+    delete:
+      tags:
+        - 'myOntology:order'
+        - order
+      summary: Cancel an order
+      parameters:
+        - name: orderID
+          in: path
+          description: ID of order that needs to be deleted
+          required: true
+          type: integer
+          format: int64
+      description: ''
+      responses:
+        '200':
+          description: Detele successfully
+          schema:
+            $ref: '#/definitions/deleteAnOrder'
+        '404':
+          description: Cannot find this order
+          schema:
+            $ref: '#/definitions/failToDelete'
+        '409':
+          description: Cannot cancel this order because its has been paid or finished
+          schema:
+            $ref: '#/definitions/failToDelete'
+  '/payment/{orderID}':
+    put:
+      tags:
+        - 'myOntology:payment'
+        - payment
+      summary: Make a payment for an order
+      parameters:
+        - name: orderID
+          in: path
+          description: ID of order that needs to be paid
+          required: true
+          type: integer
+          format: int64
+      description: ''
+      responses:
+        '200':
+          description: Pay successfully
+          schema:
+            $ref: '#/definitions/payAnOrder'
+        '404':
+          description: Cannot find this order
+          schema:
+            $ref: '#/definitions/failToPay'
+        '409':
+          description: Cannot pay this order because it has been paid
+          schema:
+            $ref: '#/definitions/payAnOrder'
+    get:
+      tags:
+        - 'myOntology:payment'
+        - payment
+      summary: Get payment detail for an order
+      parameters:
+        - name: orderID
+          in: path
+          description: ID of order that needs to be paid
+          required: true
+          type: integer
+          format: int64
+      description: ''
+      responses:
+        '200':
+          description: Get detail successfully
+          schema:
+            $ref: '#/definitions/getPayment'
+        '404':
+          description: Cannot find this order
+          schema:
+            $ref: '#/definitions/failToGetPayment'
+  /coffees:
+    post:
+      tags:
+        - 'myOntology:coffee'
+        - coffee
+      summary: Add a new coffee to the menu
+      parameters:
+        - name: type
+          in: query
+          description: Add a new coffee to the menu
+          required: true
+          type: string
+      description: ''
+      responses:
+        '200':
+          description: Add successfully
+          schema:
+            $ref: '#/definitions/addCoffee'
+        '400':
+          description: Fail to add new coffee
+          schema:
+            $ref: '#/definitions/failToAddCoffee'
+    get:
+      tags:
+        - 'myOntology:coffee'
+        - coffee
+      summary: List all coffee types
+      description: ''
+      responses:
+        '200':
+          description: Get successfully
+          schema:
+            $ref: '#/definitions/getCoffee'
+        '404':
+          description: Cannot get existing coffees
+          schema:
+            type: object
+            properties:
+              time:
+                type: string
+                format: date-time
+  '/coffees/{type}':
+    delete:
+      tags:
+        - 'myOntology:coffee'
+        - coffee
+      summary: Delete a coffee type
+      parameters:
+        - name: type
+          in: path
+          description: Name of coffee to be deleted
+          required: true
+          type: string
+          enum:
+            - Latte
+            - Espresso
+            - Cappuccino
+            - Irish Coffee
+            - Americano
+          default: Americano
+      description: ''
+      responses:
+        '200':
+          description: Delete successfully
+          schema:
+            $ref: '#/definitions/deleteCoffee'
+        '404':
+          description: Cannot find and delete this coffee
+          schema:
+            type: object
+            properties:
+              time:
+                type: string
+                format: date-time
+definitions:
+  postAnOrder:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - 'Latte Price: $6.0'
+          - 'Espresso Price: $4.0'
+          - 'Cappuccino Price: $8.0'
+          - 'Irish Coffee Price: $12.0'
+        example: 'Latte Price: $6.0'
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: Unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:POST; href:https://coffee.api.au/v1/orders'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          get this order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders/12345'
+          amend this order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/orders/12345'
+          cancel this order:
+            type: string
+            example: 'method:DELETE href:https://coffee.api.au/v1/orders/12345'
+  getOrders:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - Latte
+          - Espresso
+          - Cappuccino
+          - Irish Coffee
+        example: Latte
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: Unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/orders'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          get an order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders/12345'
+          amend an order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/orders/12345'
+          cancel an order:
+            type: string
+            example: 'method:DELETE href:https://coffee.api.au/v1/orders/12345'
+  putAnOrder:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - 'Latte Price: $6.0'
+          - 'Espresso Price: $4.0'
+          - 'Cappuccino Price: $8.0'
+          - 'Irish Coffee Price: $12.0'
+        example: 'Latte Price: $6.0'
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: Unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:PUT; href:https://coffee.api.au/v1/orders/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          get this order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders/12345'
+          amend this order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/orders/12345'
+          cancel this order:
+            type: string
+            example: 'method:DELETE href:https://coffee.api.au/v1/orders/12345'
+  failToAmend:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:PUT; href:https://coffee.api.au/v1/orders/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          amend another order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/orders/12345'
+  getAnOrder:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - Latte
+          - Espresso
+          - Cappuccino
+          - Irish Coffee
+        example: Latte
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: Unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/orders/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          amend this order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/orders/12345'
+          cancel this order:
+            type: string
+            example: 'method:DELETE href:https://coffee.api.au/v1/orders/12345'
+  failToGet:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/orders/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          get another order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders/12345'
+  deleteAnOrder:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - Latte
+          - Espresso
+          - Cappuccino
+          - Irish Coffee
+        example: Latte
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: Unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: >-
+              rel:self; method:DELETE;
+              href:https://coffee.api.au/v1/orders/12345
+          list all the other orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          cancel another order:
+            type: string
+            example: 'method:DELETE href:https://coffee.api.au/v1/orders/12345'
+  failToDelete:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: >-
+              rel:self; method:DELETE;
+              href:https://coffee.api.au/v1/orders/12345
+          list all the other orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          cancel another order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders/12345'
+  payAnOrder:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - Latte
+          - Espresso
+          - Cappuccino
+          - Irish Coffee
+        example: Latte
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: paid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:PUT; href:https://coffee.api.au/v1/payment/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          pay another order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/payment/12345'
+  failToPay:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:PUT; href:https://coffee.api.au/v1/payment/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          pay another order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/payment/12345'
+  getPayment:
+    type: object
+    properties:
+      orderID:
+        type: integer
+        format: int64
+        example: 12345
+      type:
+        type: string
+        enum:
+          - Latte
+          - Espresso
+          - Cappuccino
+          - Irish Coffee
+        example: Latte
+      size:
+        type: string
+        enum:
+          - Small
+          - Regular
+          - Large
+          - Extra large
+        example: Regular
+      quantity:
+        type: integer
+        format: int32
+        example: 1
+      cost:
+        type: number
+        format: float
+        example: '6.0'
+      status:
+        type: string
+        enum:
+          - Unpaid
+          - Paid
+          - Canceled
+          - Finished
+        example: unpaid
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/payment/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          pay another order:
+            type: string
+            example: 'method:PUT href:https://coffee.api.au/v1/payment/12345'
+  failToGetPayment:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/payment/12345'
+          list all orders:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/orders'
+          get detail of another order:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/payment/12345'
+  addCoffee:
+    type: object
+    properties:
+      type:
+        type: string
+        example: Americano
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:POST; href:https://coffee.api.au/v1/coffees'
+          list all coffee types:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/coffees'
+  failToAddCoffee:
+    type: object
+    properties:
+      time:
+        type: string
+        format: date-time
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:POST; href:https://coffee.api.au/v1/coffees'
+          list all coffee types:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/coffees'
+  getCoffee:
+    type: object
+    properties:
+      type0:
+        type: string
+        example: Latte
+      type1:
+        type: string
+        example: Espresso
+      type2:
+        type: string
+        example: Cappuccino
+      type3:
+        type: string
+        example: Irish Coffee
+      type4:
+        type: string
+        example: Americano
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: 'rel:self; method:GET; href:https://coffee.api.au/v1/coffees'
+          add a new coffee:
+            type: string
+            example: 'method:POST href:https://coffee.api.au/v1/coffees'
+  deleteCoffee:
+    type: object
+    properties:
+      type0:
+        type: string
+        example: Latte
+      type1:
+        type: string
+        example: Espresso
+      type2:
+        type: string
+        example: Cappuccino
+      type3:
+        type: string
+        example: Irish Coffee
+      links:
+        type: object
+        properties:
+          link:
+            type: string
+            example: >-
+              rel:self; method:DELETE;
+              href:https://coffee.api.au/v1/coffees/Americano
+          list all coffee types:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/coffees'
+          delete another coffee:
+            type: string
+            example: 'method:GET href:https://coffee.api.au/v1/coffees/Latte'
